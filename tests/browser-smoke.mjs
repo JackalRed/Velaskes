@@ -37,13 +37,11 @@ try {
       assert.ok(state.scrollWidth <= width + 1, label + ' ' + mode + ': horizontal overflow ' + state.scrollWidth);
       assert.equal(state.h1, 1, label + ' ' + mode + ': expected one H1');
       await page.evaluate(async () => {
-        for (let y = 0; y < document.body.scrollHeight; y += 600) {
-          window.scrollTo(0,y);
-          await new Promise(r => setTimeout(r,25));
-        }
+        const images = [...document.images];
+        images.forEach(img => { img.loading = 'eager'; });
+        await Promise.all(images.map(img => img.decode().catch(() => null)));
         window.scrollTo(0,0);
       });
-      await page.waitForTimeout(300);
       await page.screenshot({path:resolve(root,'artifacts',label+'-'+mode+'-pt.png'),fullPage:true});
       const brokenImages = await page.locator('img').evaluateAll(imgs => imgs.filter(img => !img.complete || img.naturalWidth === 0).map(img => img.src));
       assert.deepEqual(brokenImages, [], label + ' '+mode + ': broken images');
