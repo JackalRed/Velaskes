@@ -3,6 +3,12 @@
   "use strict";
   const copy = {
     pt: {
+      modalLabel: "CONHECER O AROMA",
+      modalOccasion: "A ATMOSFERA",
+      modalAvailability: "Disponibilidade mediante pedido.",
+      modalContact: "Perguntar sobre este aroma",
+      scentTrick: "Especiarias · Outono",
+
       pageTitleHome: "SMTHNG — Velas artesanais do Porto",
       pageTitleStockists: "Para lojas — SMTHNG",
       descriptionHome: "SMTHNG — velas aromáticas feitas à mão no Porto. Uma coleção de aromas com personalidade para espaços que deixam marca.",
@@ -85,6 +91,12 @@
       b2bContactCta: "Pedir uma proposta"
     },
     en: {
+      modalLabel: "MEET THE SCENT",
+      modalOccasion: "THE MOOD",
+      modalAvailability: "Availability on request.",
+      modalContact: "Ask about this scent",
+      scentTrick: "Spices · Autumn",
+
       pageTitleHome: "SMTHNG — Handcrafted scented candles from Porto",
       pageTitleStockists: "For stockists — SMTHNG",
       descriptionHome: "SMTHNG — small-batch scented candles handcrafted in Porto, Portugal. Distinct scents. Minimal design. Everyday atmosphere.",
@@ -222,6 +234,116 @@
     nav.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
     document.addEventListener("keydown", event => { if (event.key === "Escape") closeMenu(); });
     window.addEventListener("resize", () => { if (window.innerWidth > 820) closeMenu(); });
+  }
+
+
+  // Fragrance stories are editorial descriptions, not verified fragrance formulas.
+  // The note labels on the cards should be confirmed against the current catalog.
+  const scentStories = {
+    pt: {
+      nordic: ["NORDIC WOODS","Cedro · Pinho · Musgo","Uma caminhada imaginária por uma floresta tranquila: madeira, verde e ar fresco. Um aroma de carácter sereno, que convida a abrandar.","Para manhãs lentas, leitura e o conforto dos dias frios."],
+      green: ["GREEN FROST","Pinho · Eucalipto · Canela","Uma interpretação mais viva do verde: revigorante, fresco e com uma discreta sensação de calor. Como abrir a janela para um jardim depois da chuva.","Para recomeços, manhãs frescas e espaços que pedem energia."],
+      croissant: ["CROISSANT","Pastelaria · Baunilha","A lembrança de uma pastelaria acabada de abrir. Aconchegante, delicadamente doce e com um toque de indulgência.","Para pequenos-almoços demorados, domingos em casa e pausas com café."],
+      honey: ["HONEY NOIR","Mel escuro · Tabaco","Uma combinação rica e envolvente: a doçura do mel encontra um lado mais profundo e sofisticado. Quente sem ser previsível.","Para o fim do dia, uma conversa longa ou uma noite com música."],
+      trick: ["TRICK OR TREAT","Especiarias · Outono","Uma atmosfera brincalhona, misteriosa e cheia de contraste. Evoca noites compridas, luz baixa e aquela energia própria do outono.","Para noites de cinema, festas de outono e momentos fora do habitual."],
+      coastal: ["COASTAL BREEZE","Sal marinho · Madeira à deriva","Uma impressão arejada e mineral, inspirada na costa. Limpo, subtil e com a liberdade de um dia junto ao oceano.","Para manhãs soalheiras, espaços abertos e uma sensação de férias."],
+      imperial: ["IMPERIAL DAWN","Uma composição luminosa e envolvente","Um começo luminoso com uma sensação quente e elegante. Um aroma pensado para trazer presença sem dominar a divisão.","Para receber convidados, começar bem o dia ou renovar o ambiente."],
+      cigar: ["CIGAR LOUNGE","Tabaco · Couro","Profundo e intimista, com uma personalidade marcante. Inspira-se nos rituais lentos e nos interiores de textura rica.","Para noites tranquilas, leitura, jazz e momentos de pausa."]
+    },
+    en: {
+      nordic: ["NORDIC WOODS","Cedar · Pine · Moss","An imaginary walk through quiet woodland: timber, greenery and crisp air. A serene scent that invites you to slow down.","For slow mornings, reading and the comfort of colder days."],
+      green: ["GREEN FROST","Pine · Eucalyptus · Cinnamon","A brighter take on green: uplifting, fresh, with a subtle sense of warmth. Like opening a window onto a garden after rain.","For fresh starts, crisp mornings and spaces that need a little energy."],
+      croissant: ["CROISSANT","Pastry · Vanilla","The feeling of a bakery just opening its doors. Comforting, gently sweet and a little indulgent.","For slow breakfasts, Sundays at home and coffee breaks."],
+      honey: ["HONEY NOIR","Dark honey · Tobacco","Rich and enveloping: honeyed sweetness meets a deeper, more sophisticated edge. Warm without being predictable.","For evenings in, long conversations and music after dark."],
+      trick: ["TRICK OR TREAT","Spices · Autumn","Playful, mysterious and full of contrast. Think longer nights, low lighting and the particular energy of autumn.","For movie nights, autumn gatherings and something different."],
+      coastal: ["COASTAL BREEZE","Sea salt · Driftwood","Airy and mineral, inspired by the coast. Clean, subtle and as open as a day by the ocean.","For bright mornings, open spaces and holiday feelings."],
+      imperial: ["IMPERIAL DAWN","A warm, luminous composition","A bright beginning, with a warm and elegant feel. Designed to create presence without taking over the room.","For welcoming guests, starting the day or refreshing a space."],
+      cigar: ["CIGAR LOUNGE","Tobacco · Leather","Deep, intimate and unmistakable. Inspired by unhurried rituals and richly textured interiors.","For quiet evenings, reading, jazz and time to yourself."]
+    }
+  };
+  const scentImages = {
+    nordic:"nordic-woods-v2.jpg",green:"green-frost-v2.jpg",
+    croissant:"croissant-v2.jpg",honey:"honey-noir-v2.jpg",
+    trick:"trick-or-treat-v2.jpg",coastal:"coastal-breeze-v2.jpg",
+    imperial:"imperial-dawn-v2.jpg",cigar:"cigar-lounge-v2.jpg"
+  };
+  const scentDialog = document.getElementById("scent-dialog");
+  const scentButtons = document.querySelectorAll("[data-scent]");
+  let lastScent = null;
+  let previousFocus = null;
+  function refreshScentDialog() {
+    if (!scentDialog || !lastScent) return;
+    const lang = document.documentElement.lang === "en" ? "en" : "pt";
+    const values = scentStories[lang][lastScent];
+    if (!values) return;
+    scentDialog.querySelector("#scent-dialog-title").textContent = values[0];
+    scentDialog.querySelector("#scent-dialog-notes").textContent = values[1];
+    scentDialog.querySelector("#scent-dialog-description").textContent = values[2];
+    scentDialog.querySelector("#scent-dialog-mood").textContent = values[3];
+    const imageEl = scentDialog.querySelector("#scent-dialog-image");
+    imageEl.src = "./assets/img/" + scentImages[lastScent];
+    imageEl.alt = values[0] + " — SMTHNG";
+    const contact = scentDialog.querySelector("#scent-dialog-contact");
+    contact.href = "mailto:general@smthng.store?subject=" + encodeURIComponent("SMTHNG — " + values[0]);
+    scentDialog.querySelector("[data-close-scent]").setAttribute("aria-label",lang === "pt"?"Fechar":"Close");
+  }
+  for (const button of scentButtons) {
+    button.addEventListener("click", () => {
+      if (!scentDialog) return;
+      lastScent = button.dataset.scent;
+      previousFocus = button;
+      refreshScentDialog();
+      if (!scentDialog.open) scentDialog.showModal();
+    });
+  }
+  if (scentDialog) {
+    scentDialog.querySelector("[data-close-scent]").addEventListener("click", () => scentDialog.close());
+    scentDialog.addEventListener("click", event => {
+      if (event.target === scentDialog) scentDialog.close();
+    });
+    scentDialog.addEventListener("close", () => {
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+    });
+    for (const el of document.querySelectorAll("[data-lang-switch]")) {
+      el.addEventListener("click", refreshScentDialog);
+    }
+  }
+
+  // Lightweight scroll motion, only on devices that request motion.
+  // IntersectionObserver handles entry; a bounded requestAnimationFrame loop adds gentle depth.
+  const motionAllowed = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (motionAllowed && "IntersectionObserver" in window) {
+    document.documentElement.classList.add("has-reveal");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.08,rootMargin:"0px 0px -20px 0px"});
+    document.querySelectorAll(".scent-card, .intro-grid, .benefit-grid article, .made-grid, .partnership-card").forEach(el => {
+      el.classList.add("reveal-on-scroll");
+      observer.observe(el);
+    });
+  }
+  if (motionAllowed && window.matchMedia("(min-width: 821px)").matches) {
+    const parallaxItems = [...document.querySelectorAll("img[data-parallax]")];
+    let ticking = false;
+    function frame() {
+      ticking = false;
+      for (const image of parallaxItems) {
+        const rect = image.parentElement.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) continue;
+        const strength = Number(image.dataset.parallax) || 0.1;
+        const offset = Math.max(-30,Math.min(30,(window.innerHeight/2 - (rect.top+rect.height/2))*strength));
+        image.style.transform = "translate3d(0," + offset.toFixed(2) + "px,0) scale(1.08)";
+      }
+    }
+    function scheduleFrame(){if(!ticking){ticking=true;requestAnimationFrame(frame);}}
+    window.addEventListener("scroll",scheduleFrame,{passive:true});
+    window.addEventListener("resize",scheduleFrame,{passive:true});
+    scheduleFrame();
   }
 
   document.querySelectorAll("[data-year]").forEach(el => { el.textContent = String(new Date().getFullYear()); });
