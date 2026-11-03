@@ -120,7 +120,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 .stockist-hero{display:grid;grid-template-columns:54% 46%;min-height:680px;background:var(--blue)}
 .stockist-hero-copy{padding:clamp(80px,8vw,140px) clamp(30px,8vw,140px) 32px clamp(22px,6vw,104px);display:flex;flex-direction:column;align-items:flex-start;color:#fff}
 .eyebrow-light{color:#d6dcf1}
-.stockist-hero h1{font-size:clamp(73px,8.5vw,155px);line-height:.88;letter-spacing:-.08em;font-weight:500;margin:55px 0 30px}
+.stockist-hero h1{font-size:clamp(68px,7.1vw,118px);line-height:.88;letter-spacing:-.08em;font-weight:500;margin:55px 0 30px}
 .stockist-hero p:not(.eyebrow){font-size:17px;line-height:1.7;max-width:420px;color:#e0e3f2}
 .stockist-hero .button{margin-top:35px}
 .stockist-hero-foot{margin-top:auto;padding-top:40px;color:#c6cce1}
@@ -205,7 +205,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .header-inner{gap:15px}
   .header-actions{gap:12px}
   .hero-copy{min-height:550px;padding:55px 22px 25px}
-  .hero h1{font-size:clamp(71px,18vw,112px);margin:55px 0 30px}
+  .hero h1{font-size:clamp(58px,14vw,80px);margin:55px 0 30px}
   .hero-description{font-size:15px}
   .hero-footnote{font-size:9px;gap:10px}
   .hero-media{min-height:470px}
@@ -236,7 +236,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .footer-wordmark{font-size:23vw}
   .footer-bottom>div{align-items:start}
   .stockist-hero-copy{min-height:640px;padding:75px 22px 35px}
-  .stockist-hero h1{font-size:clamp(63px,16vw,100px)}
+  .stockist-hero h1{font-size:clamp(55px,12.8vw,79px)}
   .stockist-hero-photo{height:400px}
   .benefit-grid{grid-template-columns:1fr;gap:37px}
   .benefit-grid h3{margin:17px 0 10px}
