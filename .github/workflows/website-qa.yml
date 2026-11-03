@@ -1,0 +1,19 @@
+name: Website QA
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feature/smthng-editorial-website
+      - master
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check assets/site.js
+      - run: node --test tests/site.test.mjs
