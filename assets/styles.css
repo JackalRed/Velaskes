@@ -73,7 +73,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 .scent-details{display:grid;grid-template-columns:34px 1fr 30px;gap:8px;padding-top:20px;align-items:start}
 .scent-details h3{font-size:clamp(19px,2vw,29px);letter-spacing:-.035em;font-weight:600;line-height:1.2}
 .scent-details p{font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:13px;font-weight:400;color:var(--muted);margin-top:8px;line-height:1.4}
-.scent-symbol{font-size:22px;text-align:right;line-height:1}
+.scent-symbol{font-size:17px;text-align:right;line-height:1;color:var(--blue)}
 .scent-index{display:grid;grid-template-columns:1fr 2fr;gap:60px;margin-top:140px;border-top:1px solid var(--ink);padding-top:25px}
 .scent-index-heading .overline{color:var(--blue)}
 .scent-index-heading p{font-size:13px;line-height:1.5;color:var(--muted);margin-top:18px}
