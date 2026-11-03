@@ -55,7 +55,7 @@ try {
         const menu = page.locator('.menu-button');
         await menu.click();
         assert.equal(await menu.getAttribute('aria-expanded'), 'true');
-        assert.ok(await page.locator('#primary-nav').isVisible());
+        await page.locator('#primary-nav').waitFor({state:'visible', timeout:2000});
         await menu.click();
         assert.equal(await menu.getAttribute('aria-expanded'), 'false');
       }
