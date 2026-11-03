@@ -1,0 +1,37 @@
+name: Website QA
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feature/smthng-editorial-website
+      - master
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check assets/site.js
+      - run: node --test tests/site.test.mjs
+
+  visual-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.57.0
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/browser-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smthng-visual-qa
+          path: artifacts/*.png
+          if-no-files-found: ignore
