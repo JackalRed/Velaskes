@@ -355,3 +355,6 @@ img[data-parallax]{transform-origin:center center;backface-visibility:hidden}
   img[data-parallax]{transform:none!important;will-change:auto!important}
   .kinetic-phrase{background:none!important;color:var(--paper)!important;-webkit-text-fill-color:var(--paper)!important}
 }
+
+/* Frame the Nordic Woods label and unlit candle in the landscape card crop. */
+.scent-open[data-scent="nordic"] .scent-image img{object-position:center 12%}
