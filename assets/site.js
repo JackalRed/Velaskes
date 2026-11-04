@@ -17,11 +17,12 @@
       navScents: "Aromas",
       navStory: "O estúdio",
       navStockists: "Para lojas",
-      navContact: 'Contactar <span aria-hidden="true">↗</span>',
+      navContact: 'Contactar <span class="ui-arrow" aria-hidden="true"></span>',
       heroEyebrow: "ESTÚDIO INDEPENDENTE DE AROMAS — PORTO",
       heroHeading: "Há coisas<br>que <em>ficam.</em>",
       heroBody: "Velas aromáticas feitas à mão, em pequenos lotes. Para espaços com personalidade e momentos que merecem durar.",
       heroCta: "Explorar a coleção",
+      kineticPhrase: "SMTHNG STAYS.",
       introLabel: "O NOSSO PONTO DE VISTA",
       introHeading: "Não é só uma vela.<br>É <em>atmosfera.</em>",
       introBody: "Acreditamos que um aroma pode mudar a forma como se sente um espaço. Criamos velas para quem gosta de objetos simples, de detalhes inesperados e de escolher o seu próprio ambiente.",
@@ -50,9 +51,9 @@
       tradeCta: "Descobrir a parceria",
       tradeFootnote: "JÁ PRESENTES NA SCAR-ID · PORTO",
       footerIntro: "UM PEQUENO ESTÚDIO DE GRANDES ATMOSFERAS.",
-      footerStockists: "PARA LOJAS ↗",
-      footerHome: "INÍCIO ↗",
-      backToTop: "VOLTAR AO TOPO ↑",
+      footerStockists: "PARA LOJAS",
+      footerHome: "INÍCIO",
+      backToTop: "VOLTAR AO TOPO",
       b2bHeading: "Algo<br>diferente<br>para a tua <em>loja.</em>",
       b2bBody: "Velas aromáticas de pequenos lotes, feitas no Porto. Para espaços com um olhar atento ao design e vontade de descobrir marcas independentes.",
       b2bCta: "Vamos colaborar",
@@ -105,11 +106,12 @@
       navScents: "Scents",
       navStory: "Our studio",
       navStockists: "For stockists",
-      navContact: 'Get in touch <span aria-hidden="true">↗</span>',
+      navContact: 'Get in touch <span class="ui-arrow" aria-hidden="true"></span>',
       heroEyebrow: "INDEPENDENT SCENT STUDIO — PORTO",
       heroHeading: "Some things<br><em>stay.</em>",
       heroBody: "Small-batch scented candles, hand-poured in Porto. Made for spaces with personality and moments worth holding onto.",
       heroCta: "Explore the collection",
+      kineticPhrase: "SMTHNG STAYS.",
       introLabel: "OUR POINT OF VIEW",
       introHeading: "Not just a candle.<br>An <em>atmosphere.</em>",
       introBody: "We believe a scent can change how a space feels. We make candles for people who appreciate simple objects, unexpected details and setting their own mood.",
@@ -138,9 +140,9 @@
       tradeCta: "Explore partnerships",
       tradeFootnote: "ALREADY STOCKED AT SCAR-ID · PORTO",
       footerIntro: "A SMALL STUDIO OF BIG ATMOSPHERES.",
-      footerStockists: "FOR STOCKISTS ↗",
-      footerHome: "HOME ↗",
-      backToTop: "BACK TO TOP ↑",
+      footerStockists: "FOR STOCKISTS",
+      footerHome: "HOME",
+      backToTop: "BACK TO TOP",
       b2bHeading: "Something<br>different<br>for your <em>store.</em>",
       b2bBody: "Small-batch scented candles, made in Porto. For thoughtfully curated spaces that believe in discovering independent brands.",
       b2bCta: "Let's collaborate",
@@ -181,6 +183,16 @@
   };
   const page = document.body.dataset.page === "stockists" ? "stockists" : "home";
 
+  // Keep original line breaks and italic emphasis when the language changes.
+  function wrapEditorialHeading(el, html) {
+    const lines = html.split(/<br\s*\/?>/gi);
+    el.classList.add("motion-heading");
+    el.innerHTML = lines.map((line, index) =>
+      '<span class="motion-line-clip"><span class="motion-line-inner" style="--line-index:' +
+      index + '">' + line + '</span></span>'
+    ).join("");
+  }
+
   function setLanguage(lang) {
     const selected = Object.prototype.hasOwnProperty.call(copy, lang) ? lang : "pt";
     const words = copy[selected];
@@ -198,7 +210,7 @@
     });
     document.querySelectorAll("[data-i18n-html]").forEach(el => {
       const html = words[el.dataset.i18nHtml];
-      if (typeof html === "string") el.innerHTML = html;
+      if (typeof html === "string") wrapEditorialHeading(el, html);
     });
     document.querySelectorAll("[data-lang-switch]").forEach(el => {
       el.setAttribute("aria-pressed", String(el.dataset.langSwitch === selected));
@@ -262,7 +274,7 @@
     }
   };
   const scentImages = {
-    nordic:"nordic-woods-v2.jpg",green:"green-frost-v2.jpg",
+    nordic:"nordic-woods-v3.jpg",green:"green-frost-v2.jpg",
     croissant:"croissant-v2.jpg",honey:"honey-noir-v2.jpg",
     trick:"trick-or-treat-v2.jpg",coastal:"coastal-breeze-v2.jpg",
     imperial:"imperial-dawn-v2.jpg",cigar:"cigar-lounge-v2.jpg"
@@ -309,41 +321,62 @@
     }
   }
 
-  // Lightweight scroll motion, only on devices that request motion.
-  // IntersectionObserver handles entry; a bounded requestAnimationFrame loop adds gentle depth.
-  const motionAllowed = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (motionAllowed && "IntersectionObserver" in window) {
-    document.documentElement.classList.add("has-reveal");
+  // Editorial motion: mask typography, stagger collections, move photo layers and reveal type.
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (!reduceMotion.matches && "IntersectionObserver" in window) {
+    const targets = [...document.querySelectorAll(
+      ".motion-heading, .scent-card, .intro-aside, .editorial-image, " +
+      ".quote-panel, .made-grid, .trade-copy, .benefit-grid article, " +
+      ".partnership-card, .steps-list > div, .contact-inner, .b2b-photo-band > div"
+    )];
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {threshold:0.08,rootMargin:"0px 0px -20px 0px"});
-    document.querySelectorAll(".scent-card, .intro-grid, .benefit-grid article, .made-grid, .partnership-card").forEach(el => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    }, {threshold: 0.06, rootMargin: "0px 0px -5% 0px"});
+    let cardIndex = 0;
+    for (const el of targets) {
       el.classList.add("reveal-on-scroll");
+      if (el.matches(".scent-card")) el.style.setProperty("--stagger", String(cardIndex++ % 2));
       observer.observe(el);
-    });
+    }
+    document.documentElement.classList.add("motion-ready");
   }
-  if (motionAllowed && window.matchMedia("(min-width: 821px)").matches) {
-    const parallaxItems = [...document.querySelectorAll("img[data-parallax]")];
+
+  if (!reduceMotion.matches) {
+    const images = [...document.querySelectorAll("img[data-parallax]")];
+    const kinetic = document.querySelector("[data-kinetic]");
     let ticking = false;
-    function frame() {
+    function updateMotion() {
       ticking = false;
-      for (const image of parallaxItems) {
+      const viewportHeight = window.innerHeight;
+      const desktop = window.innerWidth > 820;
+      for (const image of images) {
+        if (!desktop) { image.style.transform = ""; continue; }
         const rect = image.parentElement.getBoundingClientRect();
-        if (rect.bottom < 0 || rect.top > window.innerHeight) continue;
+        if (rect.bottom < -80 || rect.top > viewportHeight + 80) continue;
         const strength = Number(image.dataset.parallax) || 0.1;
-        const offset = Math.max(-30,Math.min(30,(window.innerHeight/2 - (rect.top+rect.height/2))*strength));
-        image.style.transform = "translate3d(0," + offset.toFixed(2) + "px,0) scale(1.08)";
+        const centered = viewportHeight / 2 - (rect.top + rect.height / 2);
+        const offset = Math.max(-42, Math.min(42, centered * strength));
+        image.style.transform = "translate3d(0," + offset.toFixed(1) + "px,0) scale(1.17)";
+      }
+      if (kinetic) {
+        const rect = kinetic.getBoundingClientRect();
+        const distance = viewportHeight * 0.9 + rect.height * 0.4;
+        const progress = Math.max(0, Math.min(1, (viewportHeight * 0.82 - rect.top) / distance));
+        kinetic.style.setProperty("--ink-fill", (progress * 100).toFixed(1) + "%");
       }
     }
-    function scheduleFrame(){if(!ticking){ticking=true;requestAnimationFrame(frame);}}
-    window.addEventListener("scroll",scheduleFrame,{passive:true});
-    window.addEventListener("resize",scheduleFrame,{passive:true});
-    scheduleFrame();
+    function scheduleMotion() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(updateMotion);
+    }
+    window.addEventListener("scroll", scheduleMotion, {passive:true});
+    window.addEventListener("resize", scheduleMotion, {passive:true});
+    scheduleMotion();
   }
 
   document.querySelectorAll("[data-year]").forEach(el => { el.textContent = String(new Date().getFullYear()); });
