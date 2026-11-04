@@ -40,7 +40,14 @@ try {
         const images = [...document.images];
         images.forEach(img => { img.loading = 'eager'; });
         await Promise.all(images.map(img => img.decode().catch(() => null)));
-        window.scrollTo(0,0);
+        // Trigger IntersectionObserver reveals like a real visitor scrolling down.
+        const step = Math.max(300, Math.round(window.innerHeight * .78));
+        for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
+          window.scrollTo(0, y);
+          await new Promise(resolve => setTimeout(resolve, 35));
+        }
+        window.scrollTo(0, 0);
+        await new Promise(resolve => setTimeout(resolve, 1300));
       });
       await page.screenshot({path:resolve(root,'artifacts',label+'-'+mode+'-pt.png'),fullPage:true});
       const brokenImages = await page.locator('img').evaluateAll(imgs => imgs.filter(img => !img.complete || img.naturalWidth === 0).map(img => img.src));
