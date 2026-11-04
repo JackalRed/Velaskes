@@ -43,12 +43,14 @@ try {
         // Trigger IntersectionObserver reveals like a real visitor scrolling down.
         const step = Math.max(300, Math.round(window.innerHeight * .78));
         for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
-          window.scrollTo(0, y);
+          window.scrollTo({top:y,behavior:'instant'});
           await new Promise(resolve => setTimeout(resolve, 35));
         }
-        window.scrollTo(0, 0);
+        window.scrollTo({top:0,behavior:'instant'});
         await new Promise(resolve => setTimeout(resolve, 1300));
       });
+      const unrevealed = await page.locator('.reveal-on-scroll:not(.is-visible)').count();
+      assert.equal(unrevealed, 0, label + ' ' + mode + ': unrevealed content after full-page scrolling');
       await page.screenshot({path:resolve(root,'artifacts',label+'-'+mode+'-pt.png'),fullPage:true});
       const brokenImages = await page.locator('img').evaluateAll(imgs => imgs.filter(img => !img.complete || img.naturalWidth === 0).map(img => img.src));
       assert.deepEqual(brokenImages, [], label + ' '+mode + ': broken images');
